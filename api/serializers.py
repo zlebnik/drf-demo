@@ -12,3 +12,8 @@ class CatSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)
     text = serializers.CharField(max_length=2048)
+
+    def create(self, validated_data):
+        print('sending data:')
+        print(validated_data)
+        return
