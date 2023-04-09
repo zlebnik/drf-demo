@@ -5,6 +5,6 @@ User = get_user_model()
 
 
 class Cat(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     name = models.CharField(max_length=1024)

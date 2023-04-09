@@ -9,6 +9,12 @@ class CatSerializer(serializers.ModelSerializer):
         read_only_fields = ('owner',)
 
 
+class CatShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cat
+        fields = ('id', 'name',)
+
+
 class FeedbackSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)
     text = serializers.CharField(max_length=2048)

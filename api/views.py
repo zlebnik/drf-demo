@@ -2,18 +2,30 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import routers
+from rest_framework import permissions
+
 import random
 
 from cats import models
 
-from .serializers import CatSerializer, FeedbackSerializer
+from .serializers import CatSerializer, CatShortSerializer, FeedbackSerializer
 
 
 class CatsViewSet(viewsets.ModelViewSet):
     queryset = models.Cat.objects.all()
     serializer_class = CatSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    @action(detail=True, methods=['post'])
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return CatShortSerializer
+        return CatSerializer
+
+    def perform_destroy(self, instance):
+        instance.owner = None
+        instance.save()
+
+    @action(detail=True, methods=['post'], permission_classes=(permissions.AllowAny,))
     def pet(self, request, pk=None):
         cat = self.get_object()
         if request.user == cat.owner:
