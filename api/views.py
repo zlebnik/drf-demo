@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework import routers
@@ -19,13 +19,20 @@ class CatsViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return CatShortSerializer
-        return CatSerializer
+        return super().get_serializer_class()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
     def perform_destroy(self, instance):
         instance.owner = None
         instance.save()
 
-    @action(detail=True, methods=['post'], permission_classes=(permissions.AllowAny,))
+    @action(detail=True,
+            methods=['post'],
+            permission_classes=(permissions.AllowAny,),
+            serializer_class=serializers.Serializer
+            )
     def pet(self, request, pk=None):
         cat = self.get_object()
         if request.user == cat.owner:
