@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import api_view, action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import routers
 from rest_framework import permissions
@@ -8,7 +9,7 @@ import random
 
 from cats import models
 
-from .serializers import CatSerializer, CatShortSerializer, FeedbackSerializer
+from .serializers import CatSerializer, CatShortSerializer, FeedbackSerializer, MedalSerializer
 
 
 class CatsViewSet(viewsets.ModelViewSet):
@@ -49,5 +50,22 @@ def feedback(request):
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-router = routers.DefaultRouter()
+class MedalViewSet(viewsets.ModelViewSet):
+    serializer_class = MedalSerializer
+
+    def perform_create(self, serializer):
+        cat = get_object_or_404(models.Cat, pk=self.kwargs.get('cat_id'))
+        serializer.save(cat=cat)
+
+    def get_queryset(self):
+        cat = get_object_or_404(models.Cat, pk=self.kwargs.get('cat_id'))
+        return cat.medals.all()
+
+
+router = routers.SimpleRouter()
 router.register('cats', CatsViewSet)
+router.register(
+    r'cats/(?P<cat_id>\d+)/medals',
+    MedalViewSet,
+    basename='cats-medals'
+)

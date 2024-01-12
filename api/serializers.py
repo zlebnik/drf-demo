@@ -1,8 +1,18 @@
 from rest_framework import serializers
-from cats.models import Cat
+from cats.models import Cat, Medal
+
+
+class MedalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medal
+        fields = '__all__'
+        read_only_fields = ('cat',)
 
 
 class CatSerializer(serializers.ModelSerializer):
+    owner = serializers.StringRelatedField()
+    medals = MedalSerializer(read_only=True, many=True)
+
     class Meta:
         model = Cat
         fields = '__all__'
