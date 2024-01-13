@@ -13,5 +13,7 @@ class Cat(models.Model):
 
 
 class Medal(models.Model):
-    cat = models.ForeignKey(Cat, on_delete=models.CASCADE, related_name='medals')
+    cat = models.ForeignKey(Cat,
+                            on_delete=models.CASCADE,
+                            related_name='medals')
     name = models.CharField(max_length=1024)

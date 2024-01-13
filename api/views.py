@@ -36,7 +36,7 @@ class CatsViewSet(viewsets.ModelViewSet):
             )
     def pet(self, request, pk=None):
         cat = self.get_object()
-        if request.user == cat.owner:
+        if hasattr(cat, 'owner') and request.user == cat.owner:
             return Response({'response': f'{cat.name} likes you'})
         return Response({'response': f'{cat.name} {random.choice(["bites", "likes"])} you'})
 

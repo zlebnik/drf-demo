@@ -16,7 +16,7 @@ class CatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cat
         fields = '__all__'
-        read_only_fields = ('owner',)
+        read_only_fields = ('owner', 'medals')
 
 
 class CatShortSerializer(serializers.ModelSerializer):
@@ -32,4 +32,4 @@ class FeedbackSerializer(serializers.Serializer):
     def create(self, validated_data):
         print('sending data:')
         print(validated_data)
-        return
+        return validated_data
