@@ -8,6 +8,8 @@ class Cat(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=1024)
 
+    description = models.CharField(max_length=4096)
+
     def __str__(self):
         return self.name
 
